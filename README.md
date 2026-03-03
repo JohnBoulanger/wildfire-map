@@ -2,7 +2,7 @@
 
 A real-time wildfire monitoring dashboard built with React, TypeScript, and Mapbox GL. Fire detection events are fetched from an AWS backend, plotted on an interactive satellite map, and enriched with live weather data and ML model output imagery.
 
-![Wildfire Map Screenshot](docs/screenshot.png)
+<img width="1440" height="745" alt="Screenshot 2026-03-03 at 11 29 18 AM" src="https://github.com/user-attachments/assets/60b22a45-15b5-4416-b193-ef1f406d48e9" />
 
 ## Features
 
