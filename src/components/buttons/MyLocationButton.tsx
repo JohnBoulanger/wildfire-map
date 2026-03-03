@@ -1,3 +1,5 @@
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import GpsFixedRoundedIcon from "@mui/icons-material/GpsFixedRounded";
 import { useMap } from "../../context/useMap";
 
@@ -5,17 +7,11 @@ function MyLocationButton() {
   const { geolocate } = useMap();
 
   return (
-    <div className="relative group">
-      <button
-        type="button"
-        onClick={() => geolocate.current?.trigger()}
-        className="map-toolbar-btn"
-      >
-        <GpsFixedRoundedIcon fontSize="large" />
-      </button>
-
-      <div className="map-toolbar-tooltip">Show Current Location</div>
-    </div>
+    <Tooltip title="My Location" placement="left">
+      <IconButton size="small" onClick={() => geolocate.current?.trigger()}>
+        <GpsFixedRoundedIcon />
+      </IconButton>
+    </Tooltip>
   );
 }
 

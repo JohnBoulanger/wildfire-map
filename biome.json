@@ -33,7 +33,7 @@
 	},
 
 	"files": {
-		"includes": ["**/*"],
+		"includes": ["**/*", "!dist"],
 		"ignoreUnknown": false,
 		"maxSize": 1048576
 	}

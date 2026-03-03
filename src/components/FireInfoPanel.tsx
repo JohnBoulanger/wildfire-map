@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
+import Divider from "@mui/material/Divider";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import type { FireData } from "../constants/wildfireConstants";
 
 interface FireInfoPanelProps {
@@ -6,80 +13,188 @@ interface FireInfoPanelProps {
   onClose: () => void;
 }
 
+const weatherAPIKey = import.meta.env.VITE_WEATHER_API_KEY;
+
 function FireInfoPanel({ marker, onClose }: FireInfoPanelProps) {
-  const [fireData, setFireData] = useState<any>(null);
-  const [_loading, setLoading] = useState(true);
+  // biome-ignore lint/suspicious/noExplicitAny: weather API response has no published TS types
+  const [weather, setWeather] = useState<any | null>(null);
+  const [weatherError, setWeatherError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadFireData() {
+    async function loadWeather() {
       try {
+        setLoading(true);
+        setWeatherError(false);
+
         const location = `${marker.lat},${marker.lon}`;
         const res = await fetch(
-          `https://api.weatherapi.com/v1/current.json?key=b3f491c61df1461e8d6165522251611&q=${encodeURIComponent(
-            location,
-          )}`,
+          `https://api.weatherapi.com/v1/current.json?key=${weatherAPIKey}&q=${encodeURIComponent(location)}`,
         );
-        if (!res.ok) throw new Error("Failed to fetch weather data");
+
+        if (!res.ok) throw new Error("Weather API error");
+
         const data = await res.json();
-        setFireData(data);
-      } catch (err) {
-        console.error(err);
+        if (!data?.location || !data?.current) {
+          throw new Error("Incomplete weather data");
+        }
+
+        setWeather(data);
+      } catch {
+        setWeather(null);
+        setWeatherError(true);
       } finally {
         setLoading(false);
       }
     }
-    loadFireData();
+
+    loadWeather();
   }, [marker]);
 
   return (
-    <div className="absolute left-4 top-1/2 -translate-y-[52%] w-1/3 h-14/15 bg-black/80 rounded-md shadow-lg p-4 z-10 text-white flex flex-col gap-4">
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute top-4.5 right-3 text-white/70 hover:text-red-600 text-xl leading-none"
+    <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+      {/* Header */}
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
+        <IconButton
+          size="small"
+          onClick={onClose}
+          sx={{ mt: 0.25, flexShrink: 0 }}
+        >
+          <ArrowBackRoundedIcon fontSize="small" />
+        </IconButton>
+        <Box sx={{ flex: 1 }}>
+          {loading ? (
+            <Skeleton variant="text" width="80%" height={28} />
+          ) : weather ? (
+            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+              {weather.location.name}, {weather.location.region}
+            </Typography>
+          ) : (
+            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+              {weatherError ? "Location unavailable" : "Fire Event"}
+            </Typography>
+          )}
+          <Typography variant="caption" color="text.secondary">
+            {new Date(marker.timestamp).toLocaleString("en-CA", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </Typography>
+        </Box>
+      </Box>
+
+      <Divider />
+
+      {/* Info grid */}
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
+        <InfoRow label="Severity" value={marker.severity} />
+        <InfoRow
+          label={!loading && weather?.location ? "Location" : "Coordinates"}
+          value={
+            loading
+              ? null
+              : weather?.location
+                ? `${weather.location.name}, ${weather.location.region}`
+                : `${marker.lat.toFixed(4)}, ${marker.lon.toFixed(4)}`
+          }
+          loading={loading}
+        />
+        <InfoRow
+          label="Temperature"
+          value={
+            loading
+              ? null
+              : weather?.current?.temp_c != null
+                ? `${weather.current.temp_c} °C`
+                : "N/A"
+          }
+          loading={loading}
+        />
+        <InfoRow
+          label="Wind"
+          value={
+            loading
+              ? null
+              : weather?.current
+                ? `${weather.current.wind_kph} km/h ${weather.current.wind_dir}`
+                : "N/A"
+          }
+          loading={loading}
+        />
+        <InfoRow
+          label="Humidity"
+          value={
+            loading
+              ? null
+              : weather?.current?.humidity != null
+                ? `${weather.current.humidity}%`
+                : "N/A"
+          }
+          loading={loading}
+        />
+        <InfoRow
+          label="Condition"
+          value={loading ? null : (weather?.current?.condition?.text ?? "N/A")}
+          loading={loading}
+        />
+      </Box>
+
+      <Divider />
+
+      {/* Satellite image */}
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 200,
+          backgroundColor: "rgba(0,0,0,0.03)",
+        }}
       >
-        ×
-      </button>
+        <img
+          src={marker.output_image_url}
+          alt="Fire detection result"
+          style={{
+            maxWidth: "100%",
+            maxHeight: 280,
+            objectFit: "contain",
+            borderRadius: 4,
+          }}
+        />
+      </Paper>
+    </Box>
+  );
+}
 
-      <h2 className="text-2xl font-semibold border-b border-white/20 pb-2">
-        {fireData?.location.name}, {fireData?.location.region},{" "}
-        {fireData?.location.country}
-      </h2>
+interface InfoRowProps {
+  label: string;
+  value: string | null;
+  loading?: boolean;
+}
 
-      <div className="flex flex-col gap-2 text-sm">
-        <div className="flex justify-between">
-          <span className="font-medium text-white/70">Severity:</span>
-          <span className="font-semibold">{marker.severity}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span className="font-medium text-white/70">Coordinates:</span>
-          <span className="font-semibold">
-            {marker.lat}, {marker.lon}
-          </span>
-        </div>
-
-        <div className="flex justify-between">
-          <span className="font-medium text-white/70">Temperature:</span>
-          <span className="font-semibold">{fireData?.current.temp_c} °C</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span className="font-medium text-white/70">Wind:</span>
-          <span className="font-semibold">
-            {fireData?.current.wind_kph} km/h ({fireData?.current.wind_dir})
-          </span>
-        </div>
-
-        <div className="grow" />
-
-        <div className="w-full flex justify-center mb-4">
-          <div className="translate-y-1/5 w-4/5 h-80 bg-white/10 border border-white/20 rounded-md flex items-center justify-center text-white/60 text-lg">
-            <img src={marker.imagePath} alt="" className="w-full h-full" />
-          </div>
-        </div>
-      </div>
-    </div>
+function InfoRow({ label, value, loading = false }: InfoRowProps) {
+  return (
+    <Box>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: "block" }}
+      >
+        {label}
+      </Typography>
+      {loading ? (
+        <Skeleton variant="text" width="70%" />
+      ) : (
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          {value ?? "—"}
+        </Typography>
+      )}
+    </Box>
   );
 }
 

@@ -1,3 +1,5 @@
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import LegendToggleRoundedIcon from "@mui/icons-material/LegendToggleRounded";
 import { useMapUI } from "../../context/useMapUI";
 
@@ -6,19 +8,17 @@ function MapLegendButton() {
   const legendOpen = ui.legendOpen;
 
   return (
-    <div className="relative group">
-      <button
-        type="button"
-        className={`map-toolbar-btn ${legendOpen ? "bg-white" : ""}`}
+    <Tooltip title="Toggle Legend" placement="left">
+      <IconButton
+        size="small"
+        color={legendOpen ? "primary" : "default"}
         onClick={() =>
           setUI((prev) => ({ ...prev, legendOpen: !prev.legendOpen }))
         }
       >
-        <LegendToggleRoundedIcon fontSize="large" />
-      </button>
-
-      <div className="map-toolbar-tooltip">Toggle Map Legend</div>
-    </div>
+        <LegendToggleRoundedIcon />
+      </IconButton>
+    </Tooltip>
   );
 }
 

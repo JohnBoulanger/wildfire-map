@@ -1,3 +1,6 @@
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { CompatibleLocations } from "../../constants/wildfireConstants";
 import { useMapFilters } from "../../context/useMapFilters";
 
@@ -16,20 +19,23 @@ function LocationFilter() {
   }
 
   return (
-    <div>
+    <FormGroup>
       {CompatibleLocations.map((location) => (
-        <label key={location} className="flex items-center gap-2">
-          <input
-            key={location}
-            type="checkbox"
-            value={location}
-            checked={filters.location.has(location)}
-            onClick={() => toggle(location)}
-          />
-          <span>{location}</span>
-        </label>
+        <FormControlLabel
+          key={location}
+          control={
+            <Checkbox
+              size="small"
+              checked={filters.location.has(location)}
+              onChange={() => toggle(location)}
+              sx={{ py: 0.25 }}
+            />
+          }
+          label={location}
+          sx={{ "& .MuiFormControlLabel-label": { fontSize: "0.85rem" } }}
+        />
       ))}
-    </div>
+    </FormGroup>
   );
 }
 

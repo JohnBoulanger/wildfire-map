@@ -1,6 +1,11 @@
-import MapRoundedIcon from "@mui/icons-material/MapRounded";
-import MapStyleDropdown from "../MapStyleDropdown";
 import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import { useMap } from "../../context/useMap";
 
 const styleOptions = [
@@ -17,41 +22,49 @@ const styleOptions = [
 function MapStyleButton() {
   const { map } = useMap();
   const [activeStyle, setActiveStyle] = useState(styleOptions[0].style);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const open = Boolean(anchorEl);
 
   return (
-    <div className="relative group">
-      <MapStyleDropdown
-        button={
-          <button type="button" className="map-toolbar-btn">
-            <MapRoundedIcon fontSize="large" />
-          </button>
-        }
-        align="right"
-      >
-        <div>
-          {styleOptions.map((style) => {
-            const isActive = style.style === activeStyle;
-            return (
-              <button
-                type="button"
-                className={`map-style-dropdown-item ${
-                  isActive ? "bg-gray-200 font-semibold" : ""
-                }`}
-                onClick={() => {
-                  map.current?.setStyle(style.style);
-                  setActiveStyle(style.style);
-                }}
-                key={style.label}
-              >
-                {style.label}
-              </button>
-            );
-          })}
-        </div>
-      </MapStyleDropdown>
+    <>
+      <Tooltip title="Map Style" placement="left">
+        <IconButton
+          size="small"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          color={open ? "primary" : "default"}
+        >
+          <MapRoundedIcon />
+        </IconButton>
+      </Tooltip>
 
-      <div className="map-toolbar-tooltip">Edit Map Style</div>
-    </div>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{ paper: { sx: { minWidth: 160 } } }}
+      >
+        {styleOptions.map((option) => (
+          <MenuItem
+            key={option.label}
+            selected={option.style === activeStyle}
+            onClick={() => {
+              map.current?.setStyle(option.style);
+              setActiveStyle(option.style);
+              setAnchorEl(null);
+            }}
+            sx={{ gap: 1 }}
+          >
+            <ListItemText primary={option.label} />
+            {option.style === activeStyle && (
+              <CheckRoundedIcon fontSize="small" color="primary" />
+            )}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 }
 

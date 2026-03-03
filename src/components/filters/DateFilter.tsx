@@ -1,3 +1,5 @@
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import { useMapFilters } from "../../context/useMapFilters";
 
 function DateFilter() {
@@ -8,32 +10,32 @@ function DateFilter() {
       ...prev,
       date: {
         ...prev.date,
-        [key]: value,
+        [key]: value || null,
       },
     }));
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <div className="flex items-center gap-2">
-        <label>Start: </label>
-        <input
-          type="date"
-          id="start-date"
-          value={filters.date.start || ""}
-          onChange={(e) => setDate("start", e.target.value)}
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <label>End: </label>
-        <input
-          type="date"
-          id="end-date"
-          value={filters.date.end || ""}
-          onChange={(e) => setDate("end", e.target.value)}
-        />
-      </div>
-    </div>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <TextField
+        label="Start Date"
+        type="date"
+        size="small"
+        value={filters.date.start || ""}
+        onChange={(e) => setDate("start", e.target.value)}
+        slotProps={{ inputLabel: { shrink: true } }}
+        fullWidth
+      />
+      <TextField
+        label="End Date"
+        type="date"
+        size="small"
+        value={filters.date.end || ""}
+        onChange={(e) => setDate("end", e.target.value)}
+        slotProps={{ inputLabel: { shrink: true } }}
+        fullWidth
+      />
+    </Box>
   );
 }
 

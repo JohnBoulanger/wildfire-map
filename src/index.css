@@ -9,20 +9,21 @@ body,
   overflow: hidden;
 }
 
-@layer components {
-  .map-toolbar-btn {
-    @apply p-1 rounded-md hover:bg-gray-200 hover:text-black hover:shadow-md;
-  }
-
-  .map-toolbar-tooltip {
-    @apply absolute right-full top-1/2 -translate-y-1/2 mr-4 px-2 py-1 rounded bg-black text-white text-xs shadow opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition;
-  }
-
-  .map-style-dropdown-item {
-    @apply w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition;
-  }
-}
-
 .mapboxgl-ctrl .mapboxgl-ctrl-geolocate {
   display: none;
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3d4f66;
 }

@@ -1,3 +1,6 @@
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { FireSeverity } from "../../constants/wildfireConstants";
 import { useMapFilters } from "../../context/useMapFilters";
 
@@ -16,20 +19,23 @@ function SeverityFilter() {
   }
 
   return (
-    <div>
+    <FormGroup>
       {FireSeverity.map((severity) => (
-        <label key={severity} className="flex items-center gap-2">
-          <input
-            key={severity}
-            type="checkbox"
-            name={severity}
-            checked={filters.severity.has(severity)}
-            onChange={() => toggle(severity)}
-          />
-          <span>{severity}</span>
-        </label>
+        <FormControlLabel
+          key={severity}
+          control={
+            <Checkbox
+              size="small"
+              checked={filters.severity.has(severity)}
+              onChange={() => toggle(severity)}
+              sx={{ py: 0.25 }}
+            />
+          }
+          label={severity}
+          sx={{ "& .MuiFormControlLabel-label": { fontSize: "0.85rem" } }}
+        />
       ))}
-    </div>
+    </FormGroup>
   );
 }
 
