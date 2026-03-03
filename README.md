@@ -2,6 +2,8 @@
 
 A drone-based early wildfire detection system that fuses IR, UV, and RGB camera data with onboard telemetry into a multi-sensor ML inference pipeline. This repo contains the React/TypeScript web dashboard and cloud pipeline that processes incoming drone data and visualizes fire detection events in real time.
 
+<img width="1440" height="745" alt="Screenshot 2026-03-03 at 11 29 18 AM" src="https://github.com/user-attachments/assets/4b4a7537-0c2f-4f78-b55e-ce79f41f2777" />
+
 
 ## Overview
 
