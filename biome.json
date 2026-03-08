@@ -33,7 +33,7 @@
 	},
 
 	"files": {
-		"includes": ["**/*", "!dist"],
+		"includes": ["**/*", "!dist", "!public/potree"],
 		"ignoreUnknown": false,
 		"maxSize": 1048576
 	}

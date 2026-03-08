@@ -1,24 +1,53 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment variables — never commit these
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Vite cache
+.vite/
 
-# Editor directories and files
+# TypeScript
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Potree viewer (built from source, too large for git — rebuild with: cd public/potree && npm install && npx rollup -c)
+public/potree/build/
+public/potree/libs/
+public/potree/resources/
+
+# Point cloud data (served as static assets)
+public/pointcloud/
+
+# Raw 3D model assets
+src/assets/3d-model-example/

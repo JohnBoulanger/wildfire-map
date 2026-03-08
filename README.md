@@ -1,57 +1,74 @@
 # Wildfire Detection Map
 
-A drone-based early wildfire detection system that fuses IR, UV, and RGB camera data with onboard telemetry into a multi-sensor ML inference pipeline. This repo contains the React/TypeScript web dashboard and cloud pipeline that processes incoming drone data and visualizes fire detection events in real time.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 <img width="1440" height="745" alt="Screenshot 2026-03-03 at 11 29 18 AM" src="https://github.com/user-attachments/assets/4b4a7537-0c2f-4f78-b55e-ce79f41f2777" />
 
 
-## Overview
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Early detection is the difference between a contained burn and a catastrophic fire. This system mounts IR, UV, and RGB sensors on a drone, runs the combined sensor data through an ML model to identify fire signatures, and pushes confirmed detection events to a live web map for field operators to monitor in real time.
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Architecture
+## Expanding the ESLint configuration
 
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-Drone (IR + UV + RGB sensors + telemetry)
-                │
-                ▼
-     Cloud ML Inference Pipeline
-                │
-                ▼
-   React / TypeScript Web Dashboard
-                │
-                ▼
-  Interactive Map with Live Fire Events
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
----
-
-## Features
-
-- **Live detection map** — fire events appear on an interactive map the moment the drone detects them
-- **Multi-sensor fusion** — IR, UV, and RGB imagery combined with onboard telemetry for robust, low false-positive detection
-- **Cloud inference pipeline** — ML model runs on the cloud, results streamed to the frontend automatically
-- **Field-ready** — designed for reliable operation in remote environments
-
----
-
-## Tech Stack
-
-- **Frontend:** React, TypeScript
-- **Pipeline:** Python
-- **ML:** PyTorch
-- **Sensors:** IR, UV, RGB cameras + onboard telemetry
-
----
-
-## Status
-
-Active development — dashboard and inference pipeline functional, ongoing work on model accuracy and field testing.
-
----
-
-## Contact
-
-John Boulanger — [LinkedIn](https://www.linkedin.com/in/john-boulanger-42a706279/) — john03yyc@gmail.com

@@ -167,6 +167,7 @@ function FireInfoPanel({ marker, onClose }: FireInfoPanelProps) {
           }}
         />
       </Paper>
+
     </Box>
   );
 }

@@ -8,6 +8,7 @@ import { useMap } from "../context/useMap";
 import MapLegend from "./MapLegend";
 import { useMapUI } from "../context/useMapUI";
 import Sidebar from "./Sidebar";
+import PointCloudPanel from "./PointCloudViewer";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -98,6 +99,10 @@ function MapView() {
           ))}
 
         {legendOpen && <MapLegend />}
+
+        {activeMarker && (
+          <PointCloudPanel onClose={() => setActiveMarker(null)} />
+        )}
 
         <MapToolbar />
       </Box>
